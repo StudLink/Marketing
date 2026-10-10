@@ -1,0 +1,652 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>StudLink Marketing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gabarito:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout : tableau de bord de pilotage, une colonne lisible, en-tête collant + onglets ; fond à halos StudLink (bleu haut-gauche, pêche bas-droite) */
+:root{
+  --bg:#EAF0FA; --halo-a:rgba(160,196,250,.75); --halo-b:rgba(252,208,150,.75);
+  --surface:rgba(255,255,255,.74); --surface-2:rgba(255,255,255,.5); --solid:#FFFFFF;
+  --ink:#0E1626; --muted:#566380; --line:rgba(28,52,98,.13);
+  --blue:#3366E0; --blue-2:#3A90E8; --blue-soft:rgba(51,102,224,.1);
+  --orange:#FF8A4C; --orange-2:#FFB547; --orange-ink:#B9501B; --orange-soft:rgba(255,138,76,.14);
+  --good:#178A5E; --good-soft:rgba(23,138,94,.12); --warn:#A86508; --warn-soft:rgba(214,140,20,.14);
+  --f-display:"Gabarito","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
+  --r:14px; --r-sm:9px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A1120; --halo-a:rgba(51,102,224,.30); --halo-b:rgba(255,138,76,.16);
+  --surface:rgba(19,29,52,.80); --surface-2:rgba(19,29,52,.55); --solid:#141E36;
+  --ink:#E7EDF8; --muted:#97A5C0; --line:rgba(200,215,245,.13);
+  --blue:#7AA2FF; --blue-2:#5FB0FF; --blue-soft:rgba(122,162,255,.14);
+  --orange:#FF9D66; --orange-2:#FFC266; --orange-ink:#FFB385; --orange-soft:rgba(255,157,102,.15);
+  --good:#4CCB98; --good-soft:rgba(76,203,152,.14); --warn:#F2B455; --warn-soft:rgba(242,180,85,.14);
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0A1120; --halo-a:rgba(51,102,224,.30); --halo-b:rgba(255,138,76,.16);
+  --surface:rgba(19,29,52,.80); --surface-2:rgba(19,29,52,.55); --solid:#141E36;
+  --ink:#E7EDF8; --muted:#97A5C0; --line:rgba(200,215,245,.13);
+  --blue:#7AA2FF; --blue-2:#5FB0FF; --blue-soft:rgba(122,162,255,.14);
+  --orange:#FF9D66; --orange-2:#FFC266; --orange-ink:#FFB385; --orange-soft:rgba(255,157,102,.15);
+  --good:#4CCB98; --good-soft:rgba(76,203,152,.14); --warn:#F2B455; --warn-soft:rgba(242,180,85,.14);
+  color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;min-height:100vh;position:relative}
+body::before,body::after{content:"";position:fixed;pointer-events:none;z-index:0;border-radius:50%}
+body::before{top:-28vmax;left:-24vmax;width:70vmax;height:70vmax;background:radial-gradient(circle at 45% 45%,var(--halo-a) 0%,transparent 68%)}
+body::after{bottom:-30vmax;right:-26vmax;width:74vmax;height:74vmax;background:radial-gradient(circle at 55% 55%,var(--halo-b) 0%,transparent 66%)}
+.wrap{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding-inline:20px;padding-block:0 64px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h2{font-size:clamp(1.5rem,1.2rem + 1.4vw,2.1rem);font-weight:700;line-height:1.1}
+h3{font-size:1.08rem;font-weight:600;line-height:1.25}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.eyebrow{font-family:var(--f-display);font-size:.74rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+
+/* En-tête */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;margin-inline:-20px;padding:12px 20px 0;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 72%,transparent);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand svg{width:40px;height:40px;flex:none;color:var(--ink)}
+.brand-name{font-family:var(--f-display);font-weight:800;font-size:1.25rem;line-height:1}
+.brand-sub{font-size:.82rem;color:var(--muted)}
+.save{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:.8rem;color:var(--muted)}
+.save i{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block}
+.save[data-s="ok"] i{background:var(--good)} .save[data-s="busy"] i{background:var(--orange)} .save[data-s="local"] i{background:var(--warn)}
+.tabs{display:flex;gap:4px;margin-top:12px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:0;background:none;padding:10px 14px 12px;cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:.95rem;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--orange)}
+
+/* Blocs */
+.view{display:grid;gap:22px;padding-top:26px}
+.head{display:grid;gap:6px}
+.head p{max-width:62ch;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);min-width:0}
+.panel>h3{margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700;letter-spacing:.02em;padding:3px 9px;border-radius:99px;background:var(--blue-soft);color:var(--blue);white-space:nowrap}
+.chip.est{background:var(--warn-soft);color:var(--warn)}
+.chip.or{background:var(--orange-soft);color:var(--orange-ink)}
+.chip.ok{background:var(--good-soft);color:var(--good)}
+.note{font-size:.86rem;color:var(--muted);border-left:3px solid var(--orange);padding:4px 0 4px 12px;max-width:70ch}
+.btn{border:1px solid var(--line);background:var(--solid);padding:8px 14px;border-radius:99px;cursor:pointer;font-weight:700;font-size:.86rem}
+.btn:hover{border-color:var(--blue)}
+.btn.primary{background:linear-gradient(100deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
+.btn.small{padding:5px 11px;font-size:.8rem}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:99px;padding:3px}
+.seg button{border:0;background:none;padding:6px 14px;border-radius:99px;cursor:pointer;font-weight:700;font-size:.85rem;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--solid);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+input.field,select.field,textarea.field{width:100%;background:var(--solid);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;min-width:0}
+input.field:focus,select.field:focus,textarea.field:focus{border-color:var(--blue);outline:none;box-shadow:0 0 0 3px var(--blue-soft)}
+label.lab{display:grid;gap:4px;font-size:.8rem;color:var(--muted);font-weight:700;min-width:0}
+
+/* Semaine */
+.week-hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px}
+@media (max-width:760px){.week-hero{grid-template-columns:1fr}}
+.wk-title{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.wk-num{font-family:var(--f-display);font-weight:800;font-size:clamp(2.6rem,2rem + 3vw,4rem);line-height:.9;background:linear-gradient(100deg,var(--blue),var(--blue-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar>span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--orange),var(--orange-2));transition:width .4s ease}
+.bar.blue>span{background:linear-gradient(90deg,var(--blue),var(--blue-2))}
+.bar.done>span{background:var(--good)}
+.owners{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.owner-h{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.owner-h input{font-family:var(--f-display);font-weight:700;font-size:1.05rem;border:0;background:none;padding:2px 4px;margin-left:-4px;border-radius:6px;min-width:0;flex:1}
+.owner-h input:hover{background:var(--surface-2)}
+.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;color:#fff;flex:none;font-size:.9rem}
+.av.a{background:linear-gradient(135deg,var(--blue),var(--blue-2))} .av.b{background:linear-gradient(135deg,var(--orange),var(--orange-2))}
+.task{display:flex;gap:11px;align-items:flex-start;padding:10px 4px;border-top:1px solid var(--line);cursor:pointer}
+.task:first-of-type{border-top:0}
+.task input{appearance:none;-webkit-appearance:none;flex:none;width:21px;height:21px;border:2px solid var(--muted);border-radius:6px;margin:1px 0 0;display:grid;place-items:center;cursor:pointer;background:var(--solid)}
+.task input:checked{background:var(--good);border-color:var(--good)}
+.task input:checked::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.task .tx{display:grid;gap:1px;min-width:0}
+.task b{font-weight:700}
+.task small{color:var(--muted);font-size:.82rem}
+.task.on b{text-decoration:line-through;text-decoration-color:var(--muted);color:var(--muted)}
+.countdown{display:grid;gap:4px}
+.cd-n{font-family:var(--f-display);font-weight:800;font-size:2.4rem;line-height:1;color:var(--orange-ink)}
+.mini{display:grid;gap:12px}
+.mini-row{display:grid;gap:5px}
+.mini-row .lt{display:flex;justify-content:space-between;gap:10px;font-size:.88rem}
+.list-plain{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.list-plain li{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;flex-wrap:wrap}
+
+/* Objectifs */
+.kpis{display:grid;gap:10px}
+.kpi{display:grid;grid-template-columns:minmax(0,1.5fr) 110px 110px minmax(0,1fr);gap:14px;align-items:center;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.kpi .nm{display:grid;gap:4px;min-width:0}
+.kpi .nm b{font-family:var(--f-display);font-weight:600;font-size:1.02rem}
+.kpi .pct{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:6px}
+.kpi .auto{font-size:1.1rem;font-weight:700;padding:8px 2px}
+.kpi-head{display:grid;grid-template-columns:minmax(0,1.5fr) 110px 110px minmax(0,1fr);gap:14px;padding:0 16px}
+@media (max-width:700px){
+  .kpi{grid-template-columns:1fr 1fr}
+  .kpi .nm,.kpi .prog{grid-column:1/-1}
+  .kpi-head{display:none}
+}
+.group-l{margin-top:10px}
+.base{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px}
+
+/* Lycéens */
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px}
+.pillar{padding:14px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line);display:grid;gap:6px;align-content:start}
+.pillar .k{font-family:var(--f-display);font-weight:800;font-size:.8rem;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;color:#fff}
+.rhythm{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px}
+.rhythm div{display:grid;gap:2px}
+.rhythm strong{font-family:var(--f-display);font-size:1.6rem;font-weight:700;line-height:1.1}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button{border:1px solid var(--line);background:var(--surface-2);padding:6px 12px;border-radius:99px;cursor:pointer;font-weight:700;font-size:.82rem;color:var(--muted)}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.ideas{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px}
+.idea{display:grid;gap:8px;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);align-content:start;min-width:0}
+.idea.shot{opacity:.62}
+.idea .top-r{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.idea h4{margin:0;font-family:var(--f-display);font-weight:600;font-size:1.02rem;line-height:1.25}
+.hook{font-style:italic;padding:8px 10px;border-radius:var(--r-sm);background:var(--orange-soft);font-size:.9rem}
+.hook::before{content:"0–3 s · ";font-style:normal;font-weight:700;color:var(--orange-ink);font-size:.78rem}
+.meta{font-size:.82rem;color:var(--muted)}
+.offline{display:grid;gap:0}
+.off{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:16px;padding:14px 0;border-top:1px solid var(--line)}
+.off:first-child{border-top:0;padding-top:0}
+@media (max-width:640px){.off{grid-template-columns:1fr;gap:6px}}
+.off b{font-family:var(--f-display);font-weight:600}
+.legal{background:var(--blue-soft);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:grid;gap:8px}
+.legal ul{margin:0;padding-left:18px;display:grid;gap:5px}
+
+/* Écoles */
+.tier{display:grid;gap:8px;align-content:start}
+.tier .rank{font-family:var(--f-display);font-weight:800;color:var(--orange-ink);font-size:.82rem;letter-spacing:.06em;text-transform:uppercase}
+.steps{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:12px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.steps li::before{content:counter(s);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;background:var(--blue-soft);color:var(--blue)}
+.steps li div{display:grid;gap:2px;padding-top:5px}
+.tpls{display:grid;gap:12px}
+.tpl{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.tpl summary{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;list-style:none;font-family:var(--f-display);font-weight:600}
+.tpl summary::-webkit-details-marker{display:none}
+.tpl summary::after{content:"+";font-size:1.3rem;color:var(--muted);line-height:1}
+.tpl[open] summary::after{content:"−"}
+.tpl pre{margin:0;padding:0 16px 14px;white-space:pre-wrap;font-family:var(--f-body);font-size:.9rem;line-height:1.55}
+.tpl .acts{padding:0 16px 16px;display:flex;gap:8px;align-items:center}
+.pipeline{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+@media (max-width:640px){.pipeline{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.stage{padding:10px 12px;border-radius:var(--r-sm);background:var(--surface-2);border:1px solid var(--line);display:grid;gap:2px}
+.stage strong{font-family:var(--f-display);font-size:1.5rem;font-weight:700;line-height:1}
+.stage span{font-size:.76rem;color:var(--muted);font-weight:700}
+.add{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:10px;align-items:end}
+.tablewrap{overflow-x:auto;margin-inline:-4px}
+table.sch{width:100%;border-collapse:collapse;font-size:.9rem;min-width:660px}
+.sch th{text-align:left;font-size:.74rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:8px 6px;border-bottom:1px solid var(--line);font-weight:700}
+.sch td{padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.sch td input,.sch td select{width:100%;background:transparent;border:1px solid transparent;border-radius:7px;padding:5px 6px}
+.sch td input:hover,.sch td select:hover{border-color:var(--line)}
+.sch td input:focus,.sch td select:focus{border-color:var(--blue);outline:none;background:var(--solid)}
+.st{font-weight:700}
+.st[data-v="todo"]{color:var(--muted)} .st[data-v="sent"]{color:var(--blue)} .st[data-v="rdv"]{color:var(--orange-ink)} .st[data-v="partner"]{color:var(--good)} .st[data-v="no"]{color:var(--muted);text-decoration:line-through}
+.x{border:0;background:none;cursor:pointer;color:var(--muted);font-size:1.1rem;padding:4px 8px;border-radius:6px}
+.x:hover{color:var(--orange-ink);background:var(--orange-soft)}
+.empty{padding:22px;text-align:center;color:var(--muted);border:1.5px dashed var(--line);border-radius:var(--r)}
+.relance{font-size:.74rem;font-weight:700;color:var(--warn);display:block}
+
+/* Calendrier */
+.tl{position:relative;display:grid;gap:0;padding-left:26px}
+.tl::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--blue),var(--orange))}
+.ph{position:relative;padding:0 0 22px}
+.ph::before{content:"";position:absolute;left:-23px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2.5px solid var(--blue)}
+.ph.key::before{border-color:var(--orange);background:var(--orange)}
+.ph.now::before{width:16px;height:16px;left:-25px;top:3px;background:var(--blue);box-shadow:0 0 0 5px var(--blue-soft)}
+.ph .when{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.ph .when b{font-family:var(--f-display);font-weight:700}
+.ph-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:10px}
+.ph-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+.ph-cols div{display:grid;gap:3px;font-size:.9rem}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-weight:700;font-size:.86rem;z-index:20;transition:opacity .2s}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 100 80" aria-hidden="true">
+        <defs>
+          <linearGradient id="lgb" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#3B5BDB"/><stop offset="1" stop-color="#3A90E8"/></linearGradient>
+          <linearGradient id="lgo" x1="0" x2="1"><stop offset="0" stop-color="#FF7A5C"/><stop offset="1" stop-color="#FFB547"/></linearGradient>
+        </defs>
+        <circle cx="30" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="4"/>
+        <circle cx="70" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="4"/>
+        <rect x="8" y="30" width="48" height="38" rx="19" fill="none" stroke="currentColor" stroke-width="9"/>
+        <rect x="44" y="30" width="48" height="38" rx="19" fill="none" stroke="url(#lgb)" stroke-width="9"/>
+        <rect x="27" y="44" width="40" height="11" rx="5.5" fill="url(#lgo)"/>
+      </svg>
+      <div>
+        <div class="brand-name">StudLink</div>
+        <div class="brand-sub">Plan marketing · 0 € de pub</div>
+      </div>
+      <div class="save" id="save" data-s="busy" aria-live="polite"><i></i><span>Chargement…</span></div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab" role="tab" id="t-semaine" data-tab="semaine">Cette semaine</button>
+      <button class="tab" role="tab" id="t-objectifs" data-tab="objectifs">Objectifs</button>
+      <button class="tab" role="tab" id="t-lyceens" data-tab="lyceens">Lycéens</button>
+      <button class="tab" role="tab" id="t-ecoles" data-tab="ecoles">Écoles</button>
+      <button class="tab" role="tab" id="t-calendrier" data-tab="calendrier">Calendrier</button>
+    </nav>
+  </header>
+  <main id="app"></main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- Contenu ---------- */
+const START = new Date(2026,9,10); // point de départ du plan
+const KPIS = [
+  {id:"tt", g:"Réseaux sociaux", l:"Abonnés TikTok", t:[300,1500,5000]},
+  {id:"ig", g:"Réseaux sociaux", l:"Abonnés Instagram", t:[150,600,2000]},
+  {id:"views", g:"Réseaux sociaux", l:"Vues TikTok cumulées", t:[20000,100000,400000]},
+  {id:"signups", g:"Plateforme", l:"Inscriptions lycéens", d:"Liste d'attente ou plateforme", t:[30,200,800]},
+  {id:"contacted", g:"Écoles", l:"Écoles contactées", d:"Calculé depuis le suivi", auto:true, t:[20,60,120]},
+  {id:"partners", g:"Écoles", l:"Écoles partenaires", d:"Calculé depuis le suivi", auto:true, t:[1,3,8]},
+  {id:"lycees", g:"Lycées", l:"Lycées touchés", d:"Intervention, affiche ou relais d'un prof", t:[1,4,10]}
+];
+const TASKS = [
+  {id:"tt7",o:"b",t:"Publier 7 TikTok (1 par jour)",d:"Piocher dans la banque d'idées, onglet Lycéens"},
+  {id:"reels",o:"b",t:"Republier 3 vidéos en Reels Instagram",d:"Les 3 qui ont le mieux marché sur TikTok"},
+  {id:"stories",o:"b",t:"5 stories Instagram interactives",d:"Sondage, quiz ou boîte à questions"},
+  {id:"comments",o:"b",t:"Répondre aux commentaires sous 24 h",d:"Une question en commentaire = une idée de vidéo"},
+  {id:"stats",o:"b",t:"Repérer les 3 meilleures vidéos",d:"Noter l'accroche et le temps de visionnage moyen"},
+  {id:"schools5",o:"a",t:"Contacter 5 nouvelles écoles",d:"Les ajouter dans le suivi, onglet Écoles"},
+  {id:"relance",o:"a",t:"Relancer les écoles sans réponse",d:"Celles contactées il y a plus de 7 jours"},
+  {id:"lycee",o:"a",t:"Avancer 1 contact lycée",d:"Educa, ton ancien lycée ou un professeur principal"},
+  {id:"linkedin",o:"a",t:"1 post LinkedIn sur les coulisses",d:"Les écoles et les profs y sont, pas les lycéens"},
+  {id:"kpi",o:"a",t:"Mettre à jour les chiffres",d:"Onglet Objectifs, le dimanche soir"}
+];
+const PILLARS = {
+  A:{n:"Les galères de l'orientation",c:"var(--orange)",d:"Situations que tout lycéen reconnaît. Ce sont les vidéos qui se partagent le plus facilement.",f:"2 par semaine"},
+  B:{n:"Parcoursup décodé",c:"var(--blue)",d:"Vocabulaire, dates, erreurs à éviter. Utile, donc enregistré et revu.",f:"2 par semaine"},
+  C:{n:"Des étudiants racontent",c:"#7A5AF8",d:"Vrais parcours, vraies journées. Donne une image concrète des formations.",f:"1 à 2 par semaine"},
+  D:{n:"Le coach IA en action",c:"var(--good)",d:"Montrer le produit sur un cas réel. À tourner dès que le coach est prêt.",f:"1 par semaine"},
+  E:{n:"Les coulisses StudLink",c:"#D9488B",d:"Deux étudiants qui lancent un projet. Crée l'attachement au compte.",f:"1 par semaine"}
+};
+const IDEAS = [
+  {id:"i1",p:"A",t:"POV : on te demande ce que tu veux faire plus tard",h:"Le repas de famille où ta tante pose LA question.",f:"Sketch face caméra · 15 s"},
+  {id:"i2",p:"A",t:"Les phrases qu'on entend toutes en terminale",h:"« Fais une école de commerce, ça ouvre des portes. »",f:"Texte à l'écran + son tendance · 10 s"},
+  {id:"i3",p:"A",t:"Tu sais déjà ce que tu veux faire ?",h:"Réponds honnêtement, personne ne le saura.",f:"Story Instagram sondage"},
+  {id:"i4",p:"B",t:"Vœu ou sous-vœu : la différence en 30 secondes",h:"Vœu, sous-vœu… voilà la différence en 30 secondes.",f:"Face caméra + schéma à l'écran · 30 s"},
+  {id:"i5",p:"B",t:"Le calendrier Parcoursup en 4 dates",h:"Note ces 4 dates, après c'est trop tard.",f:"Carrousel Instagram + vidéo TikTok"},
+  {id:"i6",p:"B",t:"Projet de formation motivé : les erreurs à éviter",h:"Ne commence jamais ton texte par « Je souhaite intégrer votre formation car ».",f:"Face caméra, liste · 30–45 s"},
+  {id:"i7",p:"B",t:"Salon d'orientation : 3 questions à poser à chaque stand",h:"Ne repars pas d'un salon avec juste des brochures.",f:"Face caméra · 30 s, à poster avant les salons"},
+  {id:"i8",p:"C",t:"Une journée dans une école de commerce",h:"8 h, premier cours : voilà à quoi ça ressemble vraiment.",f:"Vlog rapide · 30–45 s"},
+  {id:"i9",p:"C",t:"Je suis en cours au Mexique, c'est mon école qui l'organise",h:"Ce matin j'ai cours à Puebla. Et non, je ne suis pas en vacances.",f:"Vlog face caméra · 30 s"},
+  {id:"i10",p:"C",t:"Prépa, fac, école : 3 étudiants, 3 avis",h:"On a posé la même question à trois étudiants.",f:"Écran partagé, interviews · 45 s"},
+  {id:"i11",p:"C",t:"Ce que j'aurais aimé savoir avant de choisir",h:"Personne ne m'avait dit ça avant de choisir mon école.",f:"Face caméra, ton histoire réelle · 30 s"},
+  {id:"i12",p:"D",t:"5 questions au coach, et voilà ce qu'il me propose",h:"Je réponds à 5 questions et je découvre des formations que je ne connaissais pas.",f:"Enregistrement d'écran + voix off · 30 s"},
+  {id:"i13",p:"D",t:"On a essayé de piéger notre IA",h:"On lui répond n'importe quoi. Regarde sa réaction.",f:"Enregistrement d'écran · 20 s · montre qu'il demande plus d'infos au lieu d'inventer"},
+  {id:"i14",p:"E",t:"On lance une startup étudiante, épisode 1",h:"Deux étudiants, 0 € de budget, un objectif : aider les lycéens à choisir.",f:"Série face caméra · 30 s par épisode"},
+  {id:"i15",p:"E",t:"On a appelé 10 écoles cette semaine",h:"Ce qu'on nous a répondu nous a surpris.",f:"Face caméra · 30 s · uniquement si c'est vrai"}
+];
+const OFFLINE = [
+  {t:"Interventions en classe avec Educa",d:"Tu interviens déjà dans des lycées avec l'association. Présente la démarche d'orientation, puis StudLink comme un outil parmi d'autres. Toujours avec l'accord de l'établissement et de l'association.",k:"Via l'établissement"},
+  {t:"Psy-EN et professeurs principaux",d:"Ce sont eux qui accompagnent l'orientation. Envoie une fiche d'une page et propose une démo de 10 minutes. Un prof convaincu relaie à toute sa classe.",k:"Via l'établissement"},
+  {t:"Ton ancien lycée",d:"Propose de revenir en terminale comme ancien élève pour parler de ton parcours. C'est la porte la plus facile à ouvrir.",k:"Via l'établissement"},
+  {t:"Affiche au CDI avec QR code",d:"Demande au documentaliste et à la direction. Le QR code mène à la plateforme, où le consentement est géré.",k:"Avec autorisation"},
+  {t:"Conseil de la vie lycéenne et délégués",d:"Présente le projet lors d'une réunion organisée par l'établissement. Les élus peuvent relayer sans que tu contactes les élèves un par un.",k:"Via l'établissement"},
+  {t:"Salons d'orientation",d:"Sans budget pour un stand : viens avec une école partenaire sur son stand, ou tourne du contenu avec des étudiants majeurs. Les dates varient selon les villes, vérifie le calendrier local.",k:"Sans stand payant"},
+  {t:"Étudiants ambassadeurs",d:"Recrute des étudiants (majeurs) dans ton école et ton réseau. Ils parlent de leur parcours dans leur ancien lycée et partagent le compte.",k:"Majeurs uniquement"},
+  {t:"Presse locale et médias étudiants",d:"Un court communiqué au lancement : deux étudiants qui lancent un outil d'orientation. Journaux régionaux, radios locales, journaux d'écoles.",k:"Gratuit"}
+];
+const TIERS = [
+  {r:"Priorité 1",t:"Écoles de commerce post-bac récentes ou peu connues",w:"Moins de notoriété que les grandes écoles, donc un vrai besoin d'être découvertes par les lycéens. Décisions souvent plus rapides, interlocuteur joignable."},
+  {r:"Priorité 2",t:"Écoles privées spécialisées",w:"Design, numérique, communication, sport business… Elles recrutent après le bac un public qui hésite encore : exactement celui du coach IA."},
+  {r:"Priorité 3",t:"Écoles où tu as un contact",w:"Anciens, amis, professeurs, partenaires d'Educa. Le premier rendez-vous est plus facile et peut devenir ta première référence."},
+  {r:"Plus tard",t:"Grandes écoles et universités",w:"Visibilité déjà forte et décisions plus longues. À approcher une fois que tu as des chiffres et des écoles partenaires à citer."}
+];
+const ARGS = [
+  ["Des lycéens qui ont déjà réfléchi","Le coach IA les aide à construire leur liste : ils arrivent avec une question précise, pas par hasard."],
+  ["Un contact direct","Le lycéen échange avec l'école par chat sur la plateforme, sans attendre un salon."],
+  ["Le bon moment","Visibles avant et pendant la période des vœux Parcoursup, quand les lycéens cherchent vraiment."],
+  ["Être école fondatrice","Les premières écoles façonnent le produit avec vous. Les conditions de lancement restent à définir de ton côté."]
+];
+const STEPS = [
+  ["Lister 30 à 50 écoles","Nom, ville, type de formation. Ajoute-les dans le suivi ci-dessous avec le statut « À contacter »."],
+  ["Trouver la bonne personne","Responsable admissions, marketing ou communication. Site de l'école, puis LinkedIn."],
+  ["Appeler d'abord","Un appel de 2 minutes ouvre plus de portes qu'un mail froid. Le mail sert à confirmer."],
+  ["Envoyer le mail ou le message LinkedIn","Personnalise la phrase sur l'école. Note la date dans le suivi."],
+  ["Relancer à 7 jours","Une seule relance courte. Le suivi signale les écoles à relancer."]
+];
+const TPLS = [
+  {id:"mail",t:"Premier mail à une école",x:`Objet : Faire découvrir [Nom de l'école] aux lycéens qui hésitent encore
+
+Bonjour [Prénom],
+
+Je suis Eliot Garet, étudiant à l'IÉSEG et co-fondateur de StudLink. Nous lançons une plateforme d'orientation pour lycéens : un coach IA les aide à construire une liste de formations adaptées à leur profil, puis ils échangent directement avec les écoles partenaires.
+
+Nous cherchons nos premières écoles partenaires avant l'ouverture des vœux Parcoursup. [Nom de l'école] pourrait intéresser les lycéens qui cherchent [type de formation, ville, spécificité].
+
+Auriez-vous 15 minutes la semaine prochaine pour que je vous présente le fonctionnement ?
+
+Bien à vous,
+Eliot Garet
+Co-fondateur, StudLink
+[ton adresse mail] · [ton numéro]`},
+  {id:"li",t:"Message LinkedIn (court)",x:`Bonjour [Prénom], je suis co-fondateur de StudLink, une plateforme qui aide les lycéens à choisir leur formation grâce à un coach IA, puis à échanger avec les écoles. Nous cherchons nos premières écoles partenaires avant Parcoursup. Seriez-vous d'accord pour un échange de 10 minutes ?`},
+  {id:"call",t:"Trame d'appel (2 minutes)",x:`1. « Bonjour, je suis Eliot, co-fondateur de StudLink. Je cherche la personne qui s'occupe du recrutement des lycéens. »
+2. Une phrase : « On lance une plateforme où un coach IA aide les lycéens à choisir leur formation, puis ils peuvent échanger avec les écoles. »
+3. La raison : « Je vous appelle parce que [Nom de l'école] correspond à [type de profil]. »
+4. La demande : « Est-ce que je peux vous envoyer une présentation et caler 15 minutes la semaine prochaine ? »
+5. Noter le nom, le mail et la date dans le suivi.`},
+  {id:"relance",t:"Relance à 7 jours",x:`Objet : Re : Faire découvrir [Nom de l'école] aux lycéens
+
+Bonjour [Prénom],
+
+Je me permets de revenir vers vous au sujet de StudLink. Je peux vous montrer la plateforme en 15 minutes, au moment qui vous arrange cette semaine ou la suivante.
+
+Bonne journée,
+Eliot`}
+];
+const STATUS = [["todo","À contacter"],["sent","Contactée"],["rdv","Rendez-vous"],["partner","Partenaire"],["no","Refus"]];
+const PHASES = [
+  {d:new Date(2026,9,10),e:new Date(2026,11,16),w:"Octobre – mi-décembre 2026",t:"Construire l'audience",l:"Ils commencent à se poser des questions, sans urgence.",c:"Galères de l'orientation, coulisses, étudiants qui racontent. Trouver ce qui marche.",s:"Prospection : les écoles préparent leur communication de l'année."},
+  {d:new Date(2026,11,17),k:1,w:"Mi-décembre",t:"Ouverture du site d'information Parcoursup",l:"Ils découvrent les formations et commencent à chercher.",c:"Parcoursup décodé : vocabulaire, dates, comment chercher.",s:"Relancer les écoles : être prêtes avant les vœux."},
+  {d:new Date(2027,0,19),k:1,w:"Mi-janvier 2027",t:"Ouverture des inscriptions et des vœux",l:"Pic de recherche : ils doivent remplir leur liste.",c:"Démos du coach IA, une vidéo par jour, lien en bio.",s:"Écoles partenaires mises en avant sur la plateforme."},
+  {d:new Date(2027,0,20),e:new Date(2027,2,11),w:"Janvier – mars",t:"Période des salons et des choix",l:"Ils comparent, visitent, hésitent.",c:"Questions à poser en salon, comparatifs de formations, témoignages.",s:"Venir sur le stand d'une école partenaire."},
+  {d:new Date(2027,2,12),k:1,w:"Mi-mars",t:"Date limite pour formuler les vœux",l:"Stress et dernières hésitations.",c:"Contenus d'urgence : vérifier sa liste, derniers conseils.",s:"Premier bilan avec les écoles partenaires."},
+  {d:new Date(2027,3,1),k:1,w:"Début avril",t:"Confirmation des vœux et projets motivés",l:"Ils rédigent leurs projets de formation motivés.",c:"Erreurs à éviter dans le projet motivé, exemples de structure.",s:"Témoignages d'étudiants de chaque école partenaire."},
+  {d:new Date(2027,5,2),k:1,w:"Début juin",t:"Premières réponses d'admission",l:"Accepté, en attente, refusé : que faire ?",c:"Expliquer les réponses et les délais, rassurer.",s:"Les écoles cherchent à convertir leurs admis."},
+  {d:new Date(2027,5,11),w:"Mi-juin – septembre",t:"Phase complémentaire",l:"Ceux qui n'ont rien cherchent des places restantes.",c:"Comment trouver une formation en phase complémentaire.",s:"Les écoles avec des places libres ont besoin de visibilité."}
+];
+const MILESTONES = PHASES.filter(p=>p.k);
+
+/* ---------- État ---------- */
+const LS="studlink-marketing-v1";
+function blank(){return {names:{a:"Eliot",b:"Associé"},base:{tt:"",ig:"",views:"",hours:""},targets:{},actual:{},checks:{},shot:{},schools:[]};}
+function norm(s){const b=blank();s=s&&typeof s==="object"?s:{};for(const k in b){if(s[k]==null||typeof s[k]!==typeof b[k]||Array.isArray(b[k])!==Array.isArray(s[k]))s[k]=b[k];}s.names=Object.assign({},b.names,s.names);s.base=Object.assign({},b.base,s.base);return s;}
+let state=blank();
+try{const raw=localStorage.getItem(LS);if(raw)state=norm(JSON.parse(raw));}catch(e){}
+const ui={tab:"semaine",period:0,pillar:"all"};
+try{const u=JSON.parse(localStorage.getItem(LS+"-ui")||"{}");Object.assign(ui,u);}catch(e){}
+const h=(location.hash||"").replace("#","");if(["semaine","objectifs","lyceens","ecoles","calendrier"].includes(h))ui.tab=h;
+
+let db=null,ref=null,saving=false,again=false,timer=null,pendingRemote=null,readOnly=false,dirtyLocal=false;
+function setSave(s,txt){const el=document.getElementById("save");el.dataset.s=s;el.querySelector("span").textContent=txt;}
+function persist(){
+  try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){}
+  if(!ref||readOnly){return;}
+  dirtyLocal=true;setSave("busy","Enregistrement…");
+  clearTimeout(timer);timer=setTimeout(flush,700);
+}
+async function flush(){
+  timer=null;
+  if(saving){again=true;return;}
+  saving=true;
+  try{await ref.set(JSON.parse(JSON.stringify(state)));setSave("ok","Enregistré");}
+  catch(e){
+    if(e&&e.code==="invalid_argument"){readOnly=true;setSave("local","Lecture seule · sauvegarde sur cet appareil");}
+    else if(e&&e.code==="unavailable"){setTimeout(flush,1500+Math.random()*1000);}
+    else setSave("local","Non enregistré en ligne · gardé sur cet appareil");
+  }
+  saving=false;
+  if(again){again=false;flush();}else if(!timer){dirtyLocal=false;}
+}
+function saveUi(){try{localStorage.setItem(LS+"-ui",JSON.stringify(ui));}catch(e){}}
+
+/* ---------- Utilitaires ---------- */
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=n=>Number(n||0).toLocaleString("fr-FR");
+const MONTHS=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+const dShort=d=>d.getDate()+" "+MONTHS[d.getMonth()];
+function isoWeek(d){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-day);const y=t.getUTCFullYear();const w=Math.ceil(((t-Date.UTC(y,0,1))/864e5+1)/7);return {y,w,key:y+"-W"+String(w).padStart(2,"0")};}
+function weekRange(d){const m=new Date(d);const day=(m.getDay()+6)%7;m.setDate(m.getDate()-day);const s=new Date(m);s.setDate(s.getDate()+6);return [m,s];}
+const today=()=>{const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate());};
+const daysBetween=(a,b)=>Math.round((b-a)/864e5);
+function addMonths(d,m){const x=new Date(d);x.setMonth(x.getMonth()+m);return x;}
+function autoVal(id){const s=state.schools;if(id==="contacted")return s.filter(x=>x.status&&x.status!=="todo").length;if(id==="partners")return s.filter(x=>x.status==="partner").length;return 0;}
+function actual(k){return k.auto?autoVal(k.id):Number(state.actual[k.id]||0);}
+function target(k,p){const t=state.targets[k.id];return t&&t[p]!=null&&t[p]!==""?Number(t[p]):k.t[p];}
+function isCustom(k,p){const t=state.targets[k.id];return !!(t&&t[p]!=null&&t[p]!=="");}
+function toRelaunch(){const t=today();return state.schools.filter(s=>s.status==="sent"&&s.last&&daysBetween(new Date(s.last+"T00:00:00"),t)>=7);}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,1800);}
+
+/* ---------- Vues ---------- */
+function vSemaine(){
+  const t=today(),wk=isoWeek(t),[a,b]=weekRange(t),ch=state.checks[wk.key]||{};
+  const done=TASKS.filter(x=>ch[x.id]).length,pct=Math.round(done/TASKS.length*100);
+  const next=MILESTONES.find(m=>m.d>=t);
+  const rel=toRelaunch();
+  const col=o=>{const list=TASKS.filter(x=>x.o===o);const n=list.filter(x=>ch[x.id]).length;return `
+    <section class="panel">
+      <div class="owner-h"><span class="av ${o}">${esc((state.names[o]||"?").charAt(0).toUpperCase())}</span>
+        <input id="name-${o}" data-bind="name" data-o="${o}" value="${esc(state.names[o])}" aria-label="Nom">
+        <span class="chip ${n===list.length?"ok":""} num">${n}/${list.length}</span></div>
+      ${list.map(x=>`<label class="task ${ch[x.id]?"on":""}"><input type="checkbox" id="c-${x.id}" data-act="check" data-id="${x.id}" ${ch[x.id]?"checked":""}><span class="tx"><b>${esc(x.t)}</b><small>${esc(x.d)}</small></span></label>`).join("")}
+    </section>`;};
+  const mini=KPIS.filter(k=>["tt","signups","contacted","lycees"].includes(k.id)).map(k=>{const v=actual(k),g=target(k,0),p=Math.min(100,g?v/g*100:0);return `<div class="mini-row"><div class="lt"><span>${esc(k.l)}</span><span class="num muted">${fmt(v)} / ${fmt(g)}</span></div><div class="bar blue"><span style="width:${p}%"></span></div></div>`;}).join("");
+  return `
+  <div class="week-hero">
+    <section class="panel" style="display:grid;gap:14px;align-content:start">
+      <div class="wk-title"><span class="wk-num num">S${wk.w}</span><div><div class="eyebrow">Semaine du ${dShort(a)} au ${dShort(b)}</div><h2 style="font-size:1.35rem">${pct===100?"Semaine bouclée":done===0?"10 actions pour cette semaine":"Encore "+(TASKS.length-done)+" action"+(TASKS.length-done>1?"s":"")}</h2></div></div>
+      <div><div class="bar ${pct===100?"done":""}"><span style="width:${pct}%"></span></div><p class="muted num" style="font-size:.84rem;margin-top:6px">${done} sur ${TASKS.length} · les cases se remettent à zéro chaque lundi</p></div>
+    </section>
+    <section class="panel countdown">
+      ${next?`<div class="eyebrow">Prochaine étape Parcoursup</div><div class="cd-n num">J-${daysBetween(t,next.d)}</div><b>${esc(next.t)}</b><span class="muted" style="font-size:.84rem">${esc(next.w)} · date indicative</span>`:`<div class="eyebrow">Parcoursup</div><b>Session terminée</b>`}
+    </section>
+  </div>
+  <div class="owners">${col("a")}${col("b")}</div>
+  <div class="grid2">
+    <section class="panel"><h3>Objectifs à 1 mois</h3><div class="mini">${mini}</div></section>
+    <section class="panel"><h3>Écoles à relancer</h3>${rel.length?`<ul class="list-plain">${rel.map(s=>`<li><span>${esc(s.name||"Sans nom")}</span><span class="muted num">contactée le ${dShort(new Date(s.last+"T00:00:00"))}</span></li>`).join("")}</ul>`:`<p class="muted" style="font-size:.9rem">Aucune pour l'instant. Les écoles « Contactée » depuis plus de 7 jours apparaîtront ici.</p>`}</section>
+  </div>`;
+}
+
+function vObjectifs(){
+  const p=ui.period,labels=["1 mois","3 mois","6 mois"],end=addMonths(START,[1,3,6][p]);
+  let g="",rows="";
+  KPIS.forEach(k=>{
+    if(k.g!==g){g=k.g;rows+=`<div class="eyebrow group-l">${esc(g)}</div>`;}
+    const v=actual(k),tg=target(k,p),pc=tg?Math.round(v/tg*100):0,cu=isCustom(k,p);
+    rows+=`<div class="kpi">
+      <div class="nm"><b>${esc(k.l)}</b><span style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${cu?`<span class="chip">Ton objectif</span>`:`<span class="chip est">Estimation</span>`}${k.d?`<span class="muted" style="font-size:.8rem">${esc(k.d)}</span>`:""}</span></div>
+      <label class="lab">Cible<input class="field num" type="number" min="0" inputmode="numeric" id="tg-${k.id}-${p}" data-bind="target" data-id="${k.id}" value="${tg}"></label>
+      ${k.auto?`<div class="lab">Réel<span class="auto num">${fmt(v)}</span></div>`:`<label class="lab">Réel<input class="field num" type="number" min="0" inputmode="numeric" id="ac-${k.id}" data-bind="actual" data-id="${k.id}" value="${state.actual[k.id]??""}" placeholder="0"></label>`}
+      <div class="prog"><div class="pct num"><span>${pc} %</span><span>${pc>=100?"Atteint":fmt(Math.max(0,tg-v))+" restants"}</span></div><div class="bar ${pc>=100?"done":"blue"}"><span style="width:${Math.min(100,pc)}%"></span></div></div>
+    </div>`;
+  });
+  const b=state.base;
+  return `
+  <div class="head"><div class="eyebrow">Objectifs</div><h2>Où on veut être le ${end.getDate()} ${MONTHS[end.getMonth()]} ${end.getFullYear()}</h2>
+    <p>Saisis tes vrais chiffres chaque dimanche. Les cibles sont modifiables : clique sur un nombre pour le changer.</p></div>
+  <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+    <div class="seg" role="group" aria-label="Horizon">${labels.map((l,i)=>`<button data-act="period" data-p="${i}" aria-pressed="${i===p}">${l}</button>`).join("")}</div>
+    <span class="muted" style="font-size:.85rem">Départ : 10 oct. 2026</span>
+  </div>
+  <p class="note">Les cibles marquées « Estimation » sont des ordres de grandeur pour un compte qui démarre sans publicité. Elles ne reposent sur aucune statistique publiée. Remplace-les par tes propres objectifs après 4 semaines de chiffres réels.</p>
+  <div class="kpi-head eyebrow"><span>Indicateur</span><span>Cible ${labels[p]}</span><span>Réel</span><span>Progression</span></div>
+  <div class="kpis">${rows}</div>
+  <section class="panel"><h3>Point de départ</h3><p class="muted" style="font-size:.88rem;margin:-6px 0 12px">Les chiffres d'aujourd'hui, pour mesurer le chemin parcouru.</p>
+    <div class="base">
+      <label class="lab">Abonnés TikTok<input class="field num" type="number" min="0" id="b-tt" data-bind="base" data-id="tt" value="${esc(b.tt)}" placeholder="—"></label>
+      <label class="lab">Abonnés Instagram<input class="field num" type="number" min="0" id="b-ig" data-bind="base" data-id="ig" value="${esc(b.ig)}" placeholder="—"></label>
+      <label class="lab">Vues moyennes / vidéo<input class="field num" type="number" min="0" id="b-views" data-bind="base" data-id="views" value="${esc(b.views)}" placeholder="—"></label>
+      <label class="lab">Heures marketing / semaine<input class="field num" type="number" min="0" id="b-hours" data-bind="base" data-id="hours" value="${esc(b.hours)}" placeholder="—"></label>
+    </div></section>`;
+}
+
+function vLyceens(){
+  const f=ui.pillar;
+  const list=IDEAS.filter(i=>f==="all"||i.p===f);
+  const shotN=IDEAS.filter(i=>state.shot[i.id]).length;
+  return `
+  <div class="head"><div class="eyebrow">Toucher les lycéens</div><h2>Être là où ils se posent la question</h2>
+    <p>Les réseaux pour se faire connaître, les établissements pour gagner la confiance. Les deux se renforcent.</p></div>
+  <section><h3 style="margin-bottom:12px">5 piliers de contenu</h3><div class="pillars">
+    ${Object.entries(PILLARS).map(([k,v])=>`<div class="pillar"><span class="k" style="background:${v.c}">${k}</span><b style="font-family:var(--f-display);font-weight:600">${esc(v.n)}</b><span class="muted" style="font-size:.86rem">${esc(v.d)}</span><span class="chip or" style="justify-self:start">${esc(v.f)}</span></div>`).join("")}
+  </div></section>
+  <section class="panel"><h3>Le rythme</h3>
+    <div class="rhythm">
+      <div><strong class="num">7</strong><span>TikTok par semaine</span><span class="muted" style="font-size:.82rem">Tu y es déjà, tiens le cap</span></div>
+      <div><strong class="num">3</strong><span>Reels Instagram</span><span class="muted" style="font-size:.82rem">Les meilleurs TikTok, sans le logo TikTok</span></div>
+      <div><strong class="num">5</strong><span>Stories</span><span class="muted" style="font-size:.82rem">Sondages et questions pour créer l'échange</span></div>
+      <div><strong class="num">1</strong><span>Carrousel</span><span class="muted" style="font-size:.82rem">Le contenu « à enregistrer » de la semaine</span></div>
+    </div>
+    <p class="note" style="margin-top:14px">Horaires : hypothèse de départ en fin de journée de semaine (après les cours) et le week-end. À vérifier dans les statistiques de ton compte, qui montrent quand tes abonnés sont actifs. Les 3 premières secondes comptent le plus : chaque idée ci-dessous a son accroche.</p>
+  </section>
+  <section style="display:grid;gap:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3>Banque d'idées de vidéos</h3><span class="muted num" style="font-size:.85rem">${shotN} tournée${shotN>1?"s":""} sur ${IDEAS.length}</span></div>
+    <div class="filters" role="group" aria-label="Filtrer par pilier"><button data-act="pillar" data-p="all" aria-pressed="${f==="all"}">Toutes</button>${Object.entries(PILLARS).map(([k,v])=>`<button data-act="pillar" data-p="${k}" aria-pressed="${f===k}">${k} · ${esc(v.n)}</button>`).join("")}</div>
+    <div class="ideas">${list.map(i=>`<article class="idea ${state.shot[i.id]?"shot":""}">
+      <div class="top-r"><span class="chip" style="background:color-mix(in srgb,${PILLARS[i.p].c} 15%,transparent);color:var(--ink)">${i.p} · ${esc(PILLARS[i.p].n)}</span>
+      <button class="btn small" data-act="shot" data-id="${i.id}" aria-pressed="${!!state.shot[i.id]}">${state.shot[i.id]?"Tournée ✓":"Marquer tournée"}</button></div>
+      <h4>${esc(i.t)}</h4><p class="hook">${esc(i.h)}</p><p class="meta">${esc(i.f)}</p></article>`).join("")}</div>
+  </section>
+  <section class="panel"><h3>Hors réseaux</h3><div class="offline">
+    ${OFFLINE.map(o=>`<div class="off"><div style="display:grid;gap:6px;align-content:start"><b>${esc(o.t)}</b><span class="chip" style="justify-self:start">${esc(o.k)}</span></div><p style="font-size:.92rem">${esc(o.d)}</p></div>`).join("")}
+  </div></section>
+  <section class="legal"><h3>Les règles avec des mineurs</h3><ul>
+    <li>Aucune donnée de lycéen collectée hors de la plateforme : pas de formulaire Google, pas de liste de numéros.</li>
+    <li>Ne contacte pas un lycéen en message privé et n'entre pas dans les groupes de classe. Laisse-les partager le lien ou le QR code eux-mêmes.</li>
+    <li>Pour filmer un mineur, il faut l'autorisation écrite de ses parents. Sans elle, filme des étudiants majeurs.</li>
+    <li>En France, avant 15 ans, le consentement des parents est requis pour les traitements de données fondés sur le consentement : à prévoir sur la plateforme.</li>
+    <li>Toute intervention dans un lycée passe par la direction ou un professeur.</li>
+  </ul></section>`;
+}
+
+function vEcoles(){
+  const S=state.schools,cnt=k=>S.filter(s=>s.status===k).length;
+  const rel=new Set(toRelaunch().map(s=>s.id));
+  return `
+  <div class="head"><div class="eyebrow">Toucher les écoles</div><h2>Trouver les 3 premières écoles partenaires</h2>
+    <p>Sans chiffres de traction, vise les écoles qui ont le plus besoin de se faire connaître, et parle-leur du moment Parcoursup.</p></div>
+  <div class="grid3">${TIERS.map(t=>`<section class="panel tier"><span class="rank">${esc(t.r)}</span><h3>${esc(t.t)}</h3><p class="muted" style="font-size:.88rem">${esc(t.w)}</p></section>`).join("")}</div>
+  <div class="grid2">
+    <section class="panel"><h3>La méthode</h3><ol class="steps">${STEPS.map(s=>`<li><div><b>${esc(s[0])}</b><span class="muted" style="font-size:.88rem">${esc(s[1])}</span></div></li>`).join("")}</ol></section>
+    <section class="panel"><h3>Ce que tu leur dis</h3><div style="display:grid;gap:12px">${ARGS.map(a=>`<div style="display:grid;gap:2px"><b>${esc(a[0])}</b><span class="muted" style="font-size:.88rem">${esc(a[1])}</span></div>`).join("")}</div>
+      <p class="note" style="margin-top:14px">Ne promets ni nombre de lycéens ni résultats tant que tu n'as pas tes propres chiffres. Proposer un pilote aux premières écoles est une piste à valider de ton côté.</p></section>
+  </div>
+  <section style="display:grid;gap:10px"><h3>Modèles de messages</h3><div class="tpls">${TPLS.map((t,i)=>`<details class="tpl" ${i===0?"open":""}><summary>${esc(t.t)}</summary><pre id="tpl-${t.id}">${esc(t.x)}</pre><div class="acts"><button class="btn small primary" data-act="copy" data-id="${t.id}">Copier</button><span class="muted" style="font-size:.8rem">Remplace les [crochets] avant d'envoyer</span></div></details>`).join("")}</div></section>
+  <section class="panel" style="display:grid;gap:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Suivi de prospection</h3><span class="muted num" style="font-size:.85rem">${S.length} école${S.length>1?"s":""}</span></div>
+    <div class="pipeline">${STATUS.map(([k,l])=>`<div class="stage"><strong class="num st" data-v="${k}" style="text-decoration:none">${cnt(k)}</strong><span>${l}</span></div>`).join("")}</div>
+    <form class="add" id="addform">
+      <label class="lab">École<input class="field" id="n-name" placeholder="Nom de l'école" required></label>
+      <label class="lab">Ville<input class="field" id="n-city" placeholder="Ville"></label>
+      <label class="lab">Contact<input class="field" id="n-contact" placeholder="Fonction ou nom"></label>
+      <button class="btn primary" type="submit">Ajouter</button>
+    </form>
+    ${S.length?`<div class="tablewrap"><table class="sch"><thead><tr><th style="width:24%">École</th><th style="width:14%">Ville</th><th style="width:18%">Contact</th><th style="width:16%">Statut</th><th style="width:14%">Dernier contact</th><th>Note</th><th></th></tr></thead><tbody>
+      ${S.map(s=>`<tr>
+        <td><input id="s-${s.id}-name" data-bind="school" data-id="${s.id}" data-f="name" value="${esc(s.name)}" aria-label="École">${rel.has(s.id)?`<span class="relance">À relancer</span>`:""}</td>
+        <td><input id="s-${s.id}-city" data-bind="school" data-id="${s.id}" data-f="city" value="${esc(s.city)}" aria-label="Ville"></td>
+        <td><input id="s-${s.id}-contact" data-bind="school" data-id="${s.id}" data-f="contact" value="${esc(s.contact)}" aria-label="Contact"></td>
+        <td><select id="s-${s.id}-status" class="st" data-v="${esc(s.status)}" data-bind="school" data-id="${s.id}" data-f="status" aria-label="Statut">${STATUS.map(([k,l])=>`<option value="${k}" ${s.status===k?"selected":""}>${l}</option>`).join("")}</select></td>
+        <td><input id="s-${s.id}-last" type="date" class="num" data-bind="school" data-id="${s.id}" data-f="last" value="${esc(s.last)}" aria-label="Dernier contact"></td>
+        <td><input id="s-${s.id}-note" data-bind="school" data-id="${s.id}" data-f="note" value="${esc(s.note)}" placeholder="—" aria-label="Note"></td>
+        <td><button class="x" data-act="del" data-id="${s.id}" aria-label="Supprimer ${esc(s.name)}">×</button></td></tr>`).join("")}
+    </tbody></table></div>`:`<div class="empty">Aucune école pour l'instant. Ajoute la première avec le formulaire ci-dessus : elle apparaîtra ici avec son statut, et le compteur « Écoles contactées » des objectifs se mettra à jour tout seul.</div>`}
+  </section>`;
+}
+
+function vCalendrier(){
+  const t=today();
+  let nowIdx=-1;PHASES.forEach((p,i)=>{if(p.d<=t)nowIdx=i;});
+  return `
+  <div class="head"><div class="eyebrow">Calendrier</div><h2>Suivre le rythme de Parcoursup</h2>
+    <p>Chaque période a ses questions. Publier la bonne vidéo au bon moment vaut plus que publier davantage.</p></div>
+  <p class="note">Dates indicatives pour la session 2027, tirées d'un guide en ligne (Les Sherpas). Le calendrier officiel est publié sur parcoursup.gouv.fr : vérifie-le avant de communiquer une date.</p>
+  <div class="tl">${PHASES.map((p,i)=>`<div class="ph ${p.k?"key":""} ${i===nowIdx?"now":""}">
+    <div class="when"><b>${esc(p.w)}</b>${i===nowIdx?`<span class="chip">Maintenant</span>`:""}${p.k?`<span class="chip or">Date clé</span>`:""}</div>
+    <div class="ph-card"><h3>${esc(p.t)}</h3><div class="ph-cols">
+      <div><span class="eyebrow">Les lycéens</span><span>${esc(p.l)}</span></div>
+      <div><span class="eyebrow">On publie</span><span>${esc(p.c)}</span></div>
+      <div><span class="eyebrow">Côté écoles</span><span>${esc(p.s)}</span></div>
+    </div></div></div>`).join("")}</div>`;
+}
+
+const VIEWS={semaine:vSemaine,objectifs:vObjectifs,lyceens:vLyceens,ecoles:vEcoles,calendrier:vCalendrier};
+function render(){
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===ui.tab));
+  document.getElementById("app").innerHTML=`<div class="view" role="tabpanel" aria-labelledby="t-${ui.tab}">${VIEWS[ui.tab]()}</div>`;
+}
+
+/* ---------- Événements ---------- */
+document.addEventListener("click",e=>{
+  const tab=e.target.closest(".tab");
+  if(tab){ui.tab=tab.dataset.tab;saveUi();try{history.replaceState(null,"","#"+ui.tab);}catch(_){}render();window.scrollTo({top:0});return;}
+  const el=e.target.closest("[data-act]");if(!el)return;
+  const a=el.dataset.act,id=el.dataset.id;
+  if(a==="check"){const k=isoWeek(today()).key;state.checks[k]=state.checks[k]||{};state.checks[k][id]=el.checked;
+    const ks=Object.keys(state.checks).sort();while(ks.length>12)delete state.checks[ks.shift()];
+    persist();render();}
+  else if(a==="period"){ui.period=Number(el.dataset.p);saveUi();render();}
+  else if(a==="pillar"){ui.pillar=el.dataset.p;saveUi();render();}
+  else if(a==="shot"){state.shot[id]=!state.shot[id];persist();render();}
+  else if(a==="del"){
+    if(el.dataset.confirm){state.schools=state.schools.filter(s=>s.id!==id);persist();render();}
+    else{el.dataset.confirm="1";el.textContent="Supprimer ?";el.style.fontSize=".78rem";setTimeout(()=>{if(el.isConnected){delete el.dataset.confirm;el.textContent="×";el.style.fontSize="";}},3000);}
+  }
+  else if(a==="copy"){const tp=TPLS.find(x=>x.id===id);
+    const fallback=()=>{const r=document.createRange();r.selectNodeContents(document.getElementById("tpl-"+id));const s=getSelection();s.removeAllRanges();s.addRange(r);toast("Texte sélectionné : copie-le");};
+    try{navigator.clipboard.writeText(tp.x).then(()=>toast("Copié"),fallback);}catch(_){fallback();}}
+});
+document.addEventListener("input",e=>{
+  const el=e.target,b=el.dataset&&el.dataset.bind;if(!b)return;
+  if(b==="name"){state.names[el.dataset.o]=el.value.slice(0,30);}
+  else if(b==="actual"){state.actual[el.dataset.id]=el.value===""?"":Math.max(0,Number(el.value));}
+  else if(b==="base"){state.base[el.dataset.id]=el.value;}
+  else if(b==="target"){const t=state.targets[el.dataset.id]=state.targets[el.dataset.id]||{};t[ui.period]=el.value===""?null:Math.max(0,Number(el.value));}
+  else if(b==="school"){const s=state.schools.find(x=>x.id===el.dataset.id);if(s){s[el.dataset.f]=el.value;
+    if(el.dataset.f==="status"){el.dataset.v=el.value;if(el.value==="sent"&&!s.last){s.last=new Date().toISOString().slice(0,10);}}}}
+  persist();
+});
+document.addEventListener("change",e=>{
+  const el=e.target;if(!el.dataset||!el.dataset.bind)return;
+  const b=el.dataset.bind;
+  if(b==="actual"||b==="target"||(b==="school"&&(el.dataset.f==="status"||el.dataset.f==="last"||el.dataset.f==="name"))){
+    setTimeout(()=>{const a=document.activeElement,id=a&&a.id;render();if(id){const n=document.getElementById(id);if(n)n.focus();}},0);
+  }
+});
+document.addEventListener("focusout",()=>{setTimeout(()=>{if(pendingRemote&&!editing()){state=norm(pendingRemote);pendingRemote=null;try{localStorage.setItem(LS,JSON.stringify(state));}catch(_){}render();}},0);});
+document.addEventListener("submit",e=>{
+  if(e.target.id!=="addform")return;e.preventDefault();
+  const v=id=>document.getElementById(id).value.trim();
+  const name=v("n-name");if(!name)return;
+  state.schools.push({id:"s"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),name,city:v("n-city"),contact:v("n-contact"),status:"todo",last:"",note:""});
+  persist();render();const f=document.getElementById("n-name");if(f)f.focus();toast("École ajoutée");
+});
+function editing(){const a=document.activeElement;return a&&a.closest&&a.closest("#app")&&/INPUT|SELECT|TEXTAREA/.test(a.tagName);}
+
+render();
+
+/* ---------- Synchronisation ---------- */
+(async()=>{
+  let cap=null;
+  try{cap=window.claude&&window.claude.use?await window.claude.use("db"):null;}catch(_){cap=null;}
+  if(!cap){setSave("local","Enregistré sur cet appareil");return;}
+  db=cap;ref=db.doc("plan/main");
+  let first=true;
+  ref.onSnapshot(snap=>{
+    if(snap.metadata&&snap.metadata.hasPendingWrites)return;
+    if(!snap.exists){if(first){first=false;flush();}return;}
+    first=false;
+    const incoming=snap.data();
+    if(JSON.stringify(norm(JSON.parse(JSON.stringify(incoming))))===JSON.stringify(state)){setSave("ok","Enregistré");return;}
+    if(saving||dirtyLocal){return;}
+    if(editing()){pendingRemote=JSON.parse(JSON.stringify(incoming));return;}
+    state=norm(JSON.parse(JSON.stringify(incoming)));
+    try{localStorage.setItem(LS,JSON.stringify(state));}catch(_){}
+    setSave("ok","Enregistré");render();
+  },err=>{setSave("local","Enregistré sur cet appareil");ref=null;});
+})();
+})();
+</script>
+
+</body></html>
